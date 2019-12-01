@@ -9,7 +9,7 @@ connect(process.env.DATABASE, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
-}).then(() => console.log('DB Connected'))
+}).then(() => console.log('Connected to Server successfully!'))
 
 app.get('/', (req, res) => {
     res.json({ 
