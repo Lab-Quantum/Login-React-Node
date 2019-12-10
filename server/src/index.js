@@ -1,24 +1,31 @@
-const express = require('express');
-const { connect } = require('mongoose');
+const express       = require('express');
+const consign       = require('consign');
+const bodyParser    = require('body-parser');
+const path          = require('path');
 
-require('dotenv').config();
-
+//Set app
 const app = express();
 
-connect(process.env.DATABASE, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true
-}).then(() => console.log('Connected to Server successfully!'))
+//Require .env and the database
+require('dotenv').config();
+require('./config/database');
 
-app.get('/', (req, res) => {
-    res.json({ 
-        ok: true
-    });
-});
+//Middlware
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
+//Autoload scripts
+consign({cwd: 'src'})
+    .include('Models')
+    .include('Controllers')
+    .then('Routes')
+    .into(app);
+
+
+//Set port
 const port = process.env.PORT || 4000;
 
+//Start application
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+    console.log(`Server running on port ${port}`);
+})
